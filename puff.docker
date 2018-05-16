@@ -1,0 +1,35 @@
+FROM openai/retro-agent:tensorflow
+
+# Needed for OpenCV.
+RUN apt-get update && \
+    apt-get install -y libgtk2.0-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Baselines has some unneeded and cumbersome dependencies,
+# so we manually fetch the deps we need.
+RUN . ~/venv/bin/activate && \
+    pip install scipy tqdm joblib zmq dill progressbar2 cloudpickle opencv-python
+
+ADD algos_dqn.py .
+ADD baselines_common_atari_wrappers.py .
+ADD envs_base.py .
+ADD envs_gym.py .
+ADD envs_wrappers_batched.py .
+ADD models_base.py .
+ADD models_dqn_dist.py .
+ADD models_dqn_scalar.py .
+ADD models_util.py .
+ADD rollouts_players.py .
+ADD rollouts_replay.py .
+ADD rollouts_rollers.py .
+ADD rollouts_rollout.py .
+ADD spaces_aggregate.py .
+ADD spaces_base.py .
+ADD spaces_binary.py .
+ADD spaces_categorical.py .
+ADD spaces_continuous.py .
+ADD spaces_gym.py .
+ADD sonic_util.py .
+ADD puff.py .
+
+CMD ["python", "-u", "/root/compo/puff.py"]
